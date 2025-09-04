@@ -9,7 +9,7 @@ from datetime import datetime
 @st.cache_resource
 def load_artifacts():
     scaler = joblib.load("scallernew.pkl")
-    label_encoder = joblib.load("label_encodernew.pkl")
+    label_encoder = joblib.load("label_encodersnew.pkl")
     model = joblib.load("svmnew_model.pkl")
     return scaler, label_encoder, model
 
