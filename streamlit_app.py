@@ -76,10 +76,13 @@ with st.expander("✍️ Manual Entry"):
             features_scaled = scaler.transform(features)
 
             # Predict
-            prediction = model.predict(features_scaled)[0]
-            outcome_label = label_encoder.inverse_transform([prediction])[0]
+            # Ensure prediction is a plain integer
+prediction = model.predict(scaled_features)
+prediction = int(prediction[0])   # take the first element and cast to int
 
-            st.success(f"✅ Predicted Outcome: **{outcome_label}**")
+# Decode label
+outcome_label = label_encoder.inverse_transform([prediction])[0]
+
 
 # ==============================
 # CSV Upload
