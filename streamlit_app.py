@@ -174,16 +174,16 @@ with st.expander("✍️ Manual Entry"):
                 row["WardType"] = label_encoders["WardType"].transform(row["WardType"])
 
                 # Scale and predict
-                X = row[expected_features].astype(float)
-                if X.shape[1] != model.n_features_in_:
-                    st.error(f"Feature count mismatch: model expects {model.n_features_in_} features, app gives {X.shape[1]}")
-                else:
-                    Xs = scaler.transform(X)
-                    pred = model.predict(Xs)[0]
-                    label = label_encoders["Outcome"].inverse_transform([pred])[0]
-                    st.success(f"✅ Predicted Outcome: **{label}**")
-        except Exception as e:
-            st.error(f"Prediction failed: {e}")
+                import time  # make sure this is at the top of your file
+
+with st.spinner("⏳ Running prediction... Please wait."):
+    time.sleep(2)  # simulate processing delay
+    Xs = scaler.transform(X)
+    pred = model.predict(Xs)[0]
+    label = label_encoders["Outcome"].inverse_transform([pred])[0]
+
+st.success(f"✅ Predicted Outcome: **{label}**")
+
 
 # ----------------------------
 # CSV upload: check + normalize + predict
