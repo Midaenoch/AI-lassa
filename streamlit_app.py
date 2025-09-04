@@ -8,9 +8,9 @@ from datetime import datetime
 # ----------------------------
 @st.cache_resource
 def load_artifacts():
-    scaler = joblib.load("scaler.pkl")
-    label_encoder = joblib.load("label_encoder.pkl")
-    model = joblib.load("svm_model.pkl")
+    scaler = joblib.load("scallernew.pkl")
+    label_encoder = joblib.load("label_encodernew.pkl")
+    model = joblib.load("svmnew_model.pkl")
     return scaler, label_encoder, model
 
 scaler, label_encoder, model = load_artifacts()
