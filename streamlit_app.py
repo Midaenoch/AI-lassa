@@ -20,6 +20,16 @@ st.title("🏥 Patient Outcome Prediction App")
 
 st.write("This app predicts **Outcome (Positive/Negative)** using a trained SVM model.")
 
+# =====================================================
+# Feature list to keep order consistent
+# =====================================================
+expected_features = [
+    "Age", "Sex", "WardType",
+    "Temperature_C", "HeartRate_bpm", "RespRate_bpm",
+    "SystolicBP_mmHg", "DiastolicBP_mmHg", "SpO2_%",
+    "GCS", "OxygenNeeded", "VentilationNeeded", "BleedingPresent"
+]
+
 # ==============================
 # Manual Entry
 # ==============================
@@ -40,8 +50,9 @@ with st.expander("✍️ Manual Entry"):
 
         # Severity
         gcs = st.number_input("Glasgow Coma Scale (GCS)", min_value=3, max_value=15, step=1)
-        oxygen_support = st.selectbox("Need Oxygen/Ventilation?", ["No", "Yes"])
-        bleeding = st.selectbox("Bleeding?", ["No", "Yes"])
+        oxygen_support = st.selectbox("Need Oxygen?", ["No", "Yes"])
+        ventilation_needed = st.selectbox("Ventilation Needed?", ["No", "Yes"])
+        bleeding = st.selectbox("Bleeding Present?", ["No", "Yes"])
 
         submitted = st.form_submit_button("🔮 Predict Outcome")
 
@@ -50,14 +61,15 @@ with st.expander("✍️ Manual Entry"):
             sex_val = 1 if sex == "M" else 0
             ward_val = 1 if ward_icu == "ICU" else 0
             oxygen_val = 1 if oxygen_support == "Yes" else 0
+            ventilation_val = 1 if ventilation_needed == "Yes" else 0
             bleeding_val = 1 if bleeding == "Yes" else 0
 
-            # Feature vector
+            # Feature vector (must follow expected_features order)
             features = [[
                 age, sex_val, ward_val,
                 temperature, heart_rate, respiratory_rate,
                 systolic_bp, diastolic_bp, spo2,
-                gcs, oxygen_val, bleeding_val
+                gcs, oxygen_val, ventilation_val, bleeding_val
             ]]
 
             # Scale features
@@ -79,9 +91,13 @@ with st.expander("📂 CSV Upload"):
 
         # Map categorical manually (must match training)
         df_uploaded["Sex"] = df_uploaded["Sex"].map({"M": 1, "F": 0})
-        df_uploaded["WardICU"] = df_uploaded["WardICU"].map({"Ward": 0, "ICU": 1})
-        df_uploaded["OxygenSupport"] = df_uploaded["OxygenSupport"].map({"No": 0, "Yes": 1})
-        df_uploaded["Bleeding"] = df_uploaded["Bleeding"].map({"No": 0, "Yes": 1})
+        df_uploaded["WardType"] = df_uploaded["WardType"].map({"Ward": 0, "ICU": 1})
+        df_uploaded["OxygenNeeded"] = df_uploaded["OxygenNeeded"].map({"No": 0, "Yes": 1})
+        df_uploaded["VentilationNeeded"] = df_uploaded["VentilationNeeded"].map({"No": 0, "Yes": 1})
+        df_uploaded["BleedingPresent"] = df_uploaded["BleedingPresent"].map({"No": 0, "Yes": 1})
+
+        # Ensure column order
+        df_uploaded = df_uploaded[expected_features]
 
         # Scale
         features_scaled = scaler.transform(df_uploaded)
