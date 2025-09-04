@@ -176,13 +176,13 @@ with st.expander("✍️ Manual Entry"):
                 # Scale and predict
                 import time  # make sure this is at the top of your file
 
-with st.spinner("⏳ Running prediction... Please wait."):
-    time.sleep(2)  # simulate processing delay
-    Xs = scaler.transform(X)
-    pred = model.predict(Xs)[0]
-    label = label_encoders["Outcome"].inverse_transform([pred])[0]
-
-st.success(f"✅ Predicted Outcome: **{label}**")
+                with st.spinner("⏳ Running prediction... Please wait."):
+                    time.sleep(2)  # simulate processing delay
+                    Xs = scaler.transform(X)
+                    pred = model.predict(Xs)[0]
+                    label = label_encoders["Outcome"].inverse_transform([pred])[0]
+                
+                st.success(f"✅ Predicted Outcome: **{label}**")
 
 
 # ----------------------------
