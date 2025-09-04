@@ -128,7 +128,7 @@ with st.expander("✍️ Manual Entry"):
 
     if submit_manual:
         with st.spinner("⏳ Running prediction... Please wait."):
-            time.sleep(2)  # 👈 simulate delay
+            time.sleep(3)  # 👈 simulate delay
             try:
                 bin_map = {"Yes": 1, "No": 0}
                 row = pd.DataFrame([[age, sex, ward_type, temperature, heart_rate,
@@ -145,7 +145,7 @@ with st.expander("✍️ Manual Entry"):
                 Xs = scaler.transform(row.astype(float))
                 pred = model.predict(Xs)[0]
                 label = label_encoders["Outcome"].inverse_transform([pred])[0]
-                st.success(f"✅ Predicted Outcome: **{label}**")
+                st.success(f"✅ Predicted Outcome for lassa: **{label}**")
             except Exception as e:
                 st.error(f"Prediction failed: {e}")
 
@@ -160,7 +160,7 @@ with st.expander("📂 CSV Upload"):
 
     if uploaded_file is not None:
         with st.spinner("⏳ Processing CSV... Please wait."):
-            time.sleep(2)  # 👈 simulate delay
+            time.sleep(3)  # 👈 simulate delay
             try:
                 df_uploaded = pd.read_csv(uploaded_file)
                 df_uploaded.columns = [c.strip() for c in df_uploaded.columns]
