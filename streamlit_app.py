@@ -97,10 +97,10 @@ expected_features = [
 ]
 
 st.set_page_config(page_title="Patient Outcome Predictor", layout="wide")
-st.title("🏥 Patient Outcome Prediction App")
+st.title("🏥 Lassa Outcome Prediction App")
 
 st.markdown(
-    "This app predicts **Outcome (Positive/Negative)** using your trained SVM model. "
+    "This app predicts **Outcome** using your trained model. "
     "Fill values manually or upload a CSV that matches the template (downloadable below)."
 )
 
