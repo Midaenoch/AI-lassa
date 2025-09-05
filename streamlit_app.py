@@ -179,23 +179,28 @@ with st.expander("📂 CSV Upload"):
                 preds = model.predict(Xs)
                 df_uploaded["PredictedOutcome"] = label_encoders["Outcome"].inverse_transform(preds)
 
-                # ✅ Outbreak check
-                pos_count = (df_uploaded["PredictedOutcome"] == "Positive").sum()
-                neg_count = (df_uploaded["PredictedOutcome"] == "Negative").sum()
-
                 st.success("✅ Predictions done. Preview:")
                 st.dataframe(df_uploaded.head(10))
                 st.download_button("📥 Download Predictions",
                                    df_uploaded.to_csv(index=False).encode("utf-8"),
                                    "predictions.csv", "text/csv")
 
-                # ✅ Show outbreak status
-                st.info(f"📊 Positive cases: {pos_count}, Negative cases: {neg_count}")
-                if pos_count > neg_count:
-                    st.error("🚨 Lassa Outbreak Declared! Positive cases exceed negative cases.")
+                # ✅ Dynamic outbreak check
+                outcome_counts = df_uploaded["PredictedOutcome"].value_counts()
+                st.info("📊 Outcome Counts:")
+                st.write(outcome_counts)
+
+                if "Positive" in outcome_counts and "Negative" in outcome_counts:
+                    pos_count = outcome_counts.get("Positive", 0)
+                    neg_count = outcome_counts.get("Negative", 0)
+
+                    if pos_count > neg_count:
+                        st.error(f"🚨 Lassa Outbreak Declared! Positive cases ({pos_count}) exceed negative cases ({neg_count}).")
+                    else:
+                        st.success(f"✅ No outbreak detected. Negative cases ({neg_count}) are higher.")
                 else:
-                    st.success("✅ No outbreak detected. Negative cases are higher.")
+                    st.warning("⚠️ Could not find 'Positive'/'Negative' labels in predictions. "
+                               "Please check your label encoder classes.")
 
             except Exception as e:
                 st.error(f"CSV Prediction failed: {e}")
-
