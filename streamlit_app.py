@@ -152,6 +152,8 @@ with st.expander("✍️ Manual Entry"):
 # ----------------------------
 # CSV upload
 # ----------------------------
+# CSV upload
+# ----------------------------
 with st.expander("📂 CSV Upload"):
     uploaded_file = st.file_uploader("Upload CSV (must contain exact headers)", type=["csv"])
     template_df = pd.DataFrame(columns=expected_features)
@@ -177,10 +179,23 @@ with st.expander("📂 CSV Upload"):
                 preds = model.predict(Xs)
                 df_uploaded["PredictedOutcome"] = label_encoders["Outcome"].inverse_transform(preds)
 
+                # ✅ Outbreak check
+                pos_count = (df_uploaded["PredictedOutcome"] == "Positive").sum()
+                neg_count = (df_uploaded["PredictedOutcome"] == "Negative").sum()
+
                 st.success("✅ Predictions done. Preview:")
                 st.dataframe(df_uploaded.head(10))
                 st.download_button("📥 Download Predictions",
                                    df_uploaded.to_csv(index=False).encode("utf-8"),
                                    "predictions.csv", "text/csv")
+
+                # ✅ Show outbreak status
+                st.info(f"📊 Positive cases: {pos_count}, Negative cases: {neg_count}")
+                if pos_count > neg_count:
+                    st.error("🚨 Lassa Outbreak Declared! Positive cases exceed negative cases.")
+                else:
+                    st.success("✅ No outbreak detected. Negative cases are higher.")
+
             except Exception as e:
                 st.error(f"CSV Prediction failed: {e}")
+
